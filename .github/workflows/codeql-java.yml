@@ -32,15 +32,9 @@ jobs:
         uses: github/codeql-action/init@v3
         with:
           languages: java
-          build-mode: manual
+          build-mode: none
           packs: |
             githubsecuritylab/codeql-java-queries
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-
-      - name: Build with Gradle (compile only, no tests)
-        run: ./gradlew assemble
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
