@@ -1,0 +1,640 @@
+[
+  {
+    "title": "Error-Based SQL Injection",
+    "description": "URL parameter is directly concatenated into SQL query without sanitization, allowing attackers to inject malicious SQL code and extract database information through error messages.",
+    "severity": "CRITICAL",
+    "function": "doesCarInformationExistsLevel1",
+    "cwe": "CWE-89",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/sqlInjection/ErrorBasedSQLInjectionVulnerability.java"
+    ],
+    "impacted_code": "applicationJdbcTemplate.query(\"select * from cars where id=\" + id, (rs) -> {...})"
+  },
+  {
+    "title": "Error-Based SQL Injection with Single Quotes",
+    "description": "URL parameter wrapped with single quotes is directly concatenated into SQL query, still vulnerable to SQL injection through quote escaping techniques.",
+    "severity": "CRITICAL",
+    "function": "doesCarInformationExistsLevel2",
+    "cwe": "CWE-89",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/sqlInjection/ErrorBasedSQLInjectionVulnerability.java"
+    ],
+    "impacted_code": "applicationJdbcTemplate.query(\"select * from cars where id='\" + id + \"'\", (rs) -> {...})"
+  },
+  {
+    "title": "Error-Based SQL Injection with Insufficient Quote Removal",
+    "description": "SQL injection where single quotes are removed but parameter is still concatenated, vulnerable to numeric-based injection attacks.",
+    "severity": "CRITICAL",
+    "function": "doesCarInformationExistsLevel3",
+    "cwe": "CWE-89",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/sqlInjection/ErrorBasedSQLInjectionVulnerability.java"
+    ],
+    "impacted_code": "id = id.replaceAll(\"'\", \"\"); applicationJdbcTemplate.query(\"select * from cars where id='\" + id + \"'\", (rs) -> {...})"
+  },
+  {
+    "title": "Error-Based SQL Injection with Misused PreparedStatement",
+    "description": "PreparedStatement is created but not used properly - parameter is still concatenated into query string instead of using parameter binding.",
+    "severity": "CRITICAL",
+    "function": "doesCarInformationExistsLevel4",
+    "cwe": "CWE-89",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/sqlInjection/ErrorBasedSQLInjectionVulnerability.java"
+    ],
+    "impacted_code": "conn.prepareStatement(\"select * from cars where id='\" + id + \"'\")"
+  },
+  {
+    "title": "Union-Based SQL Injection",
+    "description": "URL parameter directly concatenated into SQL query allowing UNION-based attacks to extract data from other tables.",
+    "severity": "CRITICAL",
+    "function": "getCarInformationLevel1",
+    "cwe": "CWE-89",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/sqlInjection/UnionBasedSQLInjectionVulnerability.java"
+    ],
+    "impacted_code": "applicationJdbcTemplate.query(\"select * from cars where id=\" + id, this::resultSetToResponse)"
+  },
+  {
+    "title": "Union-Based SQL Injection with Single Quotes",
+    "description": "URL parameter wrapped with single quotes still vulnerable to UNION-based SQL injection attacks.",
+    "severity": "CRITICAL",
+    "function": "getCarInformationLevel2",
+    "cwe": "CWE-89",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/sqlInjection/UnionBasedSQLInjectionVulnerability.java"
+    ],
+    "impacted_code": "applicationJdbcTemplate.query(\"select * from cars where id='\" + id + \"'\", this::resultSetToResponse)"
+  },
+  {
+    "title": "Blind SQL Injection",
+    "description": "URL parameter directly concatenated into SQL query, allowing blind SQL injection through time-based or boolean-based techniques.",
+    "severity": "CRITICAL",
+    "function": "getCarInformationLevel1",
+    "cwe": "CWE-89",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/sqlInjection/BlindSQLInjectionVulnerability.java"
+    ],
+    "impacted_code": "applicationJdbcTemplate.query(\"select * from cars where id=\" + id, (rs) -> {...})"
+  },
+  {
+    "title": "Blind SQL Injection with Single Quotes",
+    "description": "URL parameter wrapped with single quotes in SQL query, vulnerable to blind SQL injection attacks.",
+    "severity": "CRITICAL",
+    "function": "getCarInformationLevel2",
+    "cwe": "CWE-89",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/sqlInjection/BlindSQLInjectionVulnerability.java"
+    ],
+    "impacted_code": "applicationJdbcTemplate.query(\"select * from cars where id='\" + id + \"'\", (rs) -> {...})"
+  },
+  {
+    "title": "Command Injection - Direct Execution",
+    "description": "User-provided IP address is directly passed to system ping command without validation, allowing arbitrary command execution.",
+    "severity": "CRITICAL",
+    "function": "getVulnerablePayloadLevel1",
+    "cwe": "CWE-78",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/commandInjection/CommandInjection.java"
+    ],
+    "impacted_code": "new ProcessBuilder(new String[] {\"sh\", \"-c\", \"ping -c 2 \" + ipAddress})"
+  },
+  {
+    "title": "Command Injection - Partial Sanitization",
+    "description": "Command injection with insufficient validation - only checks for semicolon, space, and ampersand but misses other injection vectors.",
+    "severity": "CRITICAL",
+    "function": "getVulnerablePayloadLevel2",
+    "cwe": "CWE-78",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/commandInjection/CommandInjection.java"
+    ],
+    "impacted_code": "new ProcessBuilder(new String[] {\"sh\", \"-c\", \"ping -c 2 \" + ipAddress})"
+  },
+  {
+    "title": "Command Injection - Encoding Bypass",
+    "description": "Command injection where basic characters are blocked but URL-encoded equivalents are not checked properly.",
+    "severity": "CRITICAL",
+    "function": "getVulnerablePayloadLevel3",
+    "cwe": "CWE-78",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/commandInjection/CommandInjection.java"
+    ],
+    "impacted_code": "new ProcessBuilder(new String[] {\"sh\", \"-c\", \"ping -c 2 \" + ipAddress})"
+  },
+  {
+    "title": "Command Injection - Case Sensitivity Bypass",
+    "description": "Command injection where URL-encoded characters are checked but case variations can bypass the filter.",
+    "severity": "CRITICAL",
+    "function": "getVulnerablePayloadLevel4",
+    "cwe": "CWE-78",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/commandInjection/CommandInjection.java"
+    ],
+    "impacted_code": "new ProcessBuilder(new String[] {\"sh\", \"-c\", \"ping -c 2 \" + ipAddress})"
+  },
+  {
+    "title": "Command Injection - Newline Bypass",
+    "description": "Command injection vulnerable to newline character (%0A) injection for command chaining.",
+    "severity": "CRITICAL",
+    "function": "getVulnerablePayloadLevel5",
+    "cwe": "CWE-78",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/commandInjection/CommandInjection.java"
+    ],
+    "impacted_code": "new ProcessBuilder(new String[] {\"sh\", \"-c\", \"ping -c 2 \" + ipAddress})"
+  },
+  {
+    "title": "SSRF - Unrestricted URL Access",
+    "description": "User-provided URL is accessed without validation, allowing Server-Side Request Forgery to internal resources and metadata services.",
+    "severity": "HIGH",
+    "function": "getVulnerablePayloadLevel1",
+    "cwe": "CWE-918",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/ssrf/SSRFVulnerability.java"
+    ],
+    "impacted_code": "URLConnection urlConnection = u.openConnection(); urlConnection.getInputStream()"
+  },
+  {
+    "title": "SSRF - File Protocol Only Blocked",
+    "description": "SSRF vulnerability where only file:// protocol is blocked, but other internal URLs and metadata services are still accessible.",
+    "severity": "HIGH",
+    "function": "getVulnerablePayloadLevel2",
+    "cwe": "CWE-918",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/ssrf/SSRFVulnerability.java"
+    ],
+    "impacted_code": "if (isUrlValid(url) && !url.startsWith(FILE_PROTOCOL)) { return getGenericVulnerabilityResponseWhenURL(url); }"
+  },
+  {
+    "title": "SSRF - Metadata IP Blocked",
+    "description": "SSRF where 169.254.169.254 is blocked but other metadata URLs and internal services remain accessible.",
+    "severity": "HIGH",
+    "function": "getVulnerablePayloadLevel3",
+    "cwe": "CWE-918",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/ssrf/SSRFVulnerability.java"
+    ],
+    "impacted_code": "if (new URL(url).getHost().equals(\"169.254.169.254\")) { return this.invalidUrlResponse(); }"
+  },
+  {
+    "title": "SSRF - Partial Metadata URL Blocking",
+    "description": "SSRF with incomplete metadata service blocking - some internal metadata URLs can still be accessed.",
+    "severity": "HIGH",
+    "function": "getVulnerablePayloadLevel4",
+    "cwe": "CWE-918",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/ssrf/SSRFVulnerability.java"
+    ],
+    "impacted_code": "if (MetaDataServiceMock.isPresent(new URL(url))) { return this.invalidUrlResponse(); }"
+  },
+  {
+    "title": "Path Traversal - Direct File Access",
+    "description": "User-provided filename is directly concatenated to file path without validation, allowing directory traversal attacks.",
+    "severity": "HIGH",
+    "function": "getVulnerablePayloadLevel1",
+    "cwe": "CWE-22",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/pathTraversal/PathTraversalVulnerability.java"
+    ],
+    "impacted_code": "this.getClass().getResourceAsStream(\"/scripts/PathTraversal/\" + fileName)"
+  },
+  {
+    "title": "Path Traversal - Parent Directory Filter Bypass",
+    "description": "Path traversal where ../ is checked in URL but parameter value itself is not properly validated.",
+    "severity": "HIGH",
+    "function": "getVulnerablePayloadLevel2",
+    "cwe": "CWE-22",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/pathTraversal/PathTraversalVulnerability.java"
+    ],
+    "impacted_code": "!requestEntity.getUrl().toString().contains(\"../\") && fileName != null"
+  },
+  {
+    "title": "Path Traversal - Double Dot Filter",
+    "description": "Path traversal where .. is filtered but encoded variations and other traversal techniques can bypass.",
+    "severity": "HIGH",
+    "function": "getVulnerablePayloadLevel3",
+    "cwe": "CWE-22",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/pathTraversal/PathTraversalVulnerability.java"
+    ],
+    "impacted_code": "!requestEntity.getUrl().toString().contains(\"..\") && fileName != null"
+  },
+  {
+    "title": "Path Traversal - URL Encoding Bypass",
+    "description": "Path traversal where .. and %2f are checked but case variations and other encodings can bypass.",
+    "severity": "HIGH",
+    "function": "getVulnerablePayloadLevel4",
+    "cwe": "CWE-22",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/pathTraversal/PathTraversalVulnerability.java"
+    ],
+    "impacted_code": "!requestEntity.getUrl().toString().contains(\"..\") && !requestEntity.getUrl().toString().contains(\"%2f\")"
+  },
+  {
+    "title": "Path Traversal - Case Insensitive Encoding",
+    "description": "Path traversal where URL encoding check is case-insensitive but still bypassable through other techniques.",
+    "severity": "HIGH",
+    "function": "getVulnerablePayloadLevel5",
+    "cwe": "CWE-22",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/pathTraversal/PathTraversalVulnerability.java"
+    ],
+    "impacted_code": "!requestEntity.getUrl().toString().toLowerCase().contains(\"%2f\")"
+  },
+  {
+    "title": "Path Traversal - Parameter Level Check",
+    "description": "Path traversal where .. is checked in parameter value but other traversal sequences remain exploitable.",
+    "severity": "HIGH",
+    "function": "getVulnerablePayloadLevel6",
+    "cwe": "CWE-22",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/pathTraversal/PathTraversalVulnerability.java"
+    ],
+    "impacted_code": "fileName != null && !fileName.contains(\"..\")"
+  },
+  {
+    "title": "Path Traversal - Null Byte Injection",
+    "description": "Path traversal exploiting null byte vulnerability in filename validation - content before null byte is used.",
+    "severity": "HIGH",
+    "function": "getVulnerablePayloadLevel7",
+    "cwe": "CWE-22",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/pathTraversal/PathTraversalVulnerability.java"
+    ],
+    "impacted_code": "fileName = indexOfNullByte >= 0 ? queryFileName.substring(0, indexOfNullByte) : queryFileName"
+  },
+  {
+    "title": "Reflected XSS - Image Tag Attribute",
+    "description": "User input directly reflected in img src attribute without encoding, allowing XSS through malicious image sources.",
+    "severity": "HIGH",
+    "function": "getVulnerablePayloadLevel1",
+    "cwe": "CWE-79",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/xss/reflected/XSSInImgTagAttribute.java"
+    ],
+    "impacted_code": "String.format(\"<img src=%s width=\\\"400\\\" height=\\\"300\\\"/>\", imageLocation)"
+  },
+  {
+    "title": "Reflected XSS - Quoted Image Attribute",
+    "description": "User input in quoted img src attribute without HTML encoding, vulnerable to XSS through quote escaping.",
+    "severity": "HIGH",
+    "function": "getVulnerablePayloadLevel2",
+    "cwe": "CWE-79",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/xss/reflected/XSSInImgTagAttribute.java"
+    ],
+    "impacted_code": "String.format(\"<img src=\\\"%s\\\" width=\\\"400\\\" height=\\\"300\\\"/>\", imageLocation)"
+  },
+  {
+    "title": "Reflected XSS - HTML Escaped but Event Handlers",
+    "description": "Input is HTML escaped but event handlers like onerror can still be injected through unquoted attributes.",
+    "severity": "HIGH",
+    "function": "getVulnerablePayloadLevel3",
+    "cwe": "CWE-79",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/xss/reflected/XSSInImgTagAttribute.java"
+    ],
+    "impacted_code": "String.format(\"<img src=%s width=\\\"400\\\" height=\\\"300\\\"/>\", StringEscapeUtils.escapeHtml4(imageLocation))"
+  },
+  {
+    "title": "Reflected XSS - Parenthesis Filter Bypass",
+    "description": "XSS where parentheses are filtered but backtick operator and other techniques can bypass restrictions.",
+    "severity": "HIGH",
+    "function": "getVulnerablePayloadLevel4",
+    "cwe": "CWE-79",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/xss/reflected/XSSInImgTagAttribute.java"
+    ],
+    "impacted_code": "if (!imageLocation.contains(\"(\") || !imageLocation.contains(\")\"))"
+  },
+  {
+    "title": "Reflected XSS - Null Byte Validation Bypass",
+    "description": "XSS exploiting null byte vulnerability in filename validation - malicious content after null byte is rendered.",
+    "severity": "HIGH",
+    "function": "getVulnerablePayloadLevel5",
+    "cwe": "CWE-79",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/xss/reflected/XSSInImgTagAttribute.java"
+    ],
+    "impacted_code": "validatedFileName = imageLocation.substring(0, imageLocation.indexOf(Constants.NULL_BYTE_CHARACTER))"
+  },
+  {
+    "title": "Reflected XSS - HTML Tag Injection",
+    "description": "User input directly injected into div tag without encoding, allowing arbitrary HTML/JavaScript injection.",
+    "severity": "HIGH",
+    "function": "getVulnerablePayloadLevel1",
+    "cwe": "CWE-79",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/xss/reflected/XSSWithHtmlTagInjection.java"
+    ],
+    "impacted_code": "String.format(\"<div>%s<div>\", map.getValue())"
+  },
+  {
+    "title": "Reflected XSS - Partial Tag Filtering",
+    "description": "XSS where script/img/anchor tags are filtered but other dangerous tags like object, iframe remain exploitable.",
+    "severity": "HIGH",
+    "function": "getVulnerablePayloadLevel2",
+    "cwe": "CWE-79",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/xss/reflected/XSSWithHtmlTagInjection.java"
+    ],
+    "impacted_code": "Pattern pattern = Pattern.compile(\"[<]+[(script)(img)(a)]+.*[>]+\"); if (!matcher.find())"
+  },
+  {
+    "title": "Reflected XSS - Keyword Blacklist Bypass",
+    "description": "XSS where alert and javascript keywords are blacklisted but can be bypassed through encoding or alternative vectors.",
+    "severity": "HIGH",
+    "function": "getVulnerablePayloadLevel3",
+    "cwe": "CWE-79",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/xss/reflected/XSSWithHtmlTagInjection.java"
+    ],
+    "impacted_code": "!map.getValue().contains(\"alert\") && !map.getValue().contains(\"javascript\")"
+  },
+  {
+    "title": "Persistent XSS - HTML Tag",
+    "description": "User comment stored in database and reflected in div tag without encoding, allowing persistent XSS attacks.",
+    "severity": "HIGH",
+    "function": "getVulnerablePayloadLevel1",
+    "cwe": "CWE-79",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/xss/persistent/PersistentXSSInHTMLTagVulnerability.java"
+    ],
+    "impacted_code": "posts.append(\"<div id=\\\"comments\\\">\" + function.apply(post.getContent()) + \"</div>\")"
+  },
+  {
+    "title": "Persistent XSS - Tag Filtering",
+    "description": "Persistent XSS where img/input tags are removed but other dangerous tags and event handlers remain.",
+    "severity": "HIGH",
+    "function": "getVulnerablePayloadLevel2",
+    "cwe": "CWE-79",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/xss/persistent/PersistentXSSInHTMLTagVulnerability.java"
+    ],
+    "impacted_code": "IMG_INPUT_TAG_PATTERN.matcher(post).replaceAll(\"\")"
+  },
+  {
+    "title": "Persistent XSS - Case Insensitive Filter",
+    "description": "Persistent XSS with case-insensitive tag filtering but still bypassable through alternative tags.",
+    "severity": "HIGH",
+    "function": "getVulnerablePayloadLevel3",
+    "cwe": "CWE-79",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/xss/persistent/PersistentXSSInHTMLTagVulnerability.java"
+    ],
+    "impacted_code": "IMG_INPUT_TAG_CASE_INSENSITIVE_PATTERN.matcher(post).replaceAll(\"\")"
+  },
+  {
+    "title": "Persistent XSS - Null Byte Tag Filter",
+    "description": "Persistent XSS exploiting null byte vulnerability - tags checked before null byte but content after remains unfiltered.",
+    "severity": "HIGH",
+    "function": "getVulnerablePayloadLevel4",
+    "cwe": "CWE-79",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/xss/persistent/PersistentXSSInHTMLTagVulnerability.java"
+    ],
+    "impacted_code": "this.nullByteVulnerablePatternChecker(post, IMG_INPUT_TAG_PATTERN)"
+  },
+  {
+    "title": "Persistent XSS - Null Byte Case Insensitive",
+    "description": "Persistent XSS with null byte vulnerability and case-insensitive filtering, still exploitable.",
+    "severity": "HIGH",
+    "function": "getVulnerablePayloadLevel5",
+    "cwe": "CWE-79",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/xss/persistent/PersistentXSSInHTMLTagVulnerability.java"
+    ],
+    "impacted_code": "this.nullByteVulnerablePatternChecker(post, IMG_INPUT_TAG_CASE_INSENSITIVE_PATTERN)"
+  },
+  {
+    "title": "Persistent XSS - Null Byte Escaping",
+    "description": "Persistent XSS where HTML escaping only applies before null byte - content after null byte remains unescaped.",
+    "severity": "HIGH",
+    "function": "getVulnerablePayloadLevel6",
+    "cwe": "CWE-79",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/xss/persistent/PersistentXSSInHTMLTagVulnerability.java"
+    ],
+    "impacted_code": "StringEscapeUtils.escapeHtml4(post.substring(0, post.indexOf(NULL_BYTE_CHARACTER))) + post.substring(post.indexOf(NULL_BYTE_CHARACTER))"
+  },
+  {
+    "title": "XXE - No Validation",
+    "description": "XML External Entity vulnerability with no protection - allows reading local files and SSRF through malicious XML entities.",
+    "severity": "CRITICAL",
+    "function": "getVulnerablePayloadLevel1",
+    "cwe": "CWE-611",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/xxe/XXEVulnerability.java"
+    ],
+    "impacted_code": "Unmarshaller jaxbUnmarshaller = jc.createUnmarshaller(); jaxbUnmarshaller.unmarshal(in)"
+  },
+  {
+    "title": "XXE - General Entities Disabled Only",
+    "description": "XXE where only general entities are disabled but parameter entities can still be exploited for attacks.",
+    "severity": "CRITICAL",
+    "function": "getVulnerablePayloadLevel2",
+    "cwe": "CWE-611",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/xxe/XXEVulnerability.java"
+    ],
+    "impacted_code": "spf.setFeature(\"http://xml.org/sax/features/external-general-entities\", false)"
+  },
+  {
+    "title": "Unrestricted File Upload - No Validation",
+    "description": "File upload without filename or content validation, allowing upload of malicious files including XSS and path traversal.",
+    "severity": "CRITICAL",
+    "function": "getVulnerablePayloadLevel1",
+    "cwe": "CWE-434",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/fileupload/UnrestrictedFileUpload.java"
+    ],
+    "impacted_code": "Files.copy(file.getInputStream(), root.resolve(fileName), StandardCopyOption.REPLACE_EXISTING)"
+  },
+  {
+    "title": "Unrestricted File Upload - Random Prefix",
+    "description": "File upload with random prefix but no extension validation, still vulnerable to malicious file uploads.",
+    "severity": "CRITICAL",
+    "function": "getVulnerablePayloadLevel2",
+    "cwe": "CWE-434",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/fileupload/UnrestrictedFileUpload.java"
+    ],
+    "impacted_code": "fileName = RANDOM.nextInt() + \"_\" + file.getOriginalFilename()"
+  },
+  {
+    "title": "Unrestricted File Upload - HTML Extension Only",
+    "description": "File upload blocking .html extension but .htm and other dangerous extensions remain allowed.",
+    "severity": "CRITICAL",
+    "function": "getVulnerablePayloadLevel3",
+    "cwe": "CWE-434",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/fileupload/UnrestrictedFileUpload.java"
+    ],
+    "impacted_code": "!ENDS_WITH_HTML_PATTERN.matcher(file.getOriginalFilename()).matches()"
+  },
+  {
+    "title": "Unrestricted File Upload - HTML and HTM Block",
+    "description": "File upload blocking .html and .htm but vulnerable to case variations and other extensions.",
+    "severity": "CRITICAL",
+    "function": "getVulnerablePayloadLevel4",
+    "cwe": "CWE-434",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/fileupload/UnrestrictedFileUpload.java"
+    ],
+    "impacted_code": "!ENDS_WITH_HTML_OR_HTM_PATTERN.matcher(file.getOriginalFilename()).matches()"
+  },
+  {
+    "title": "Unrestricted File Upload - Case Insensitive Extension",
+    "description": "File upload with case-insensitive HTML/HTM blocking but still bypassable through double extensions.",
+    "severity": "CRITICAL",
+    "function": "getVulnerablePayloadLevel5",
+    "cwe": "CWE-434",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/fileupload/UnrestrictedFileUpload.java"
+    ],
+    "impacted_code": "!ENDS_WITH_HTML_OR_HTM_PATTERN.matcher(file.getOriginalFilename().toLowerCase()).matches()"
+  },
+  {
+    "title": "Unrestricted File Upload - Whitelist Contains Check",
+    "description": "File upload checking if filename contains .png or .jpeg but not verifying extension ends with them.",
+    "severity": "CRITICAL",
+    "function": "getVulnerablePayloadLevel6",
+    "cwe": "CWE-434",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/fileupload/UnrestrictedFileUpload.java"
+    ],
+    "impacted_code": "CONTAINS_PNG_OR_JPEG_PATTERN.matcher(file.getOriginalFilename()).find()"
+  },
+  {
+    "title": "Unrestricted File Upload - Null Byte Extension",
+    "description": "File upload exploiting null byte vulnerability - validation checks full filename but only content before null byte is used.",
+    "severity": "CRITICAL",
+    "function": "getVulnerablePayloadLevel7",
+    "cwe": "CWE-434",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/fileupload/UnrestrictedFileUpload.java"
+    ],
+    "impacted_code": "originalFileName = file.getOriginalFilename().substring(0, file.getOriginalFilename().indexOf(NULL_BYTE_CHARACTER))"
+  },
+  {
+    "title": "Unrestricted File Upload - Path Traversal",
+    "description": "File upload with content disposition allowing path traversal through malicious filenames.",
+    "severity": "HIGH",
+    "function": "getVulnerablePayloadLevel8",
+    "cwe": "CWE-434",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/fileupload/UnrestrictedFileUpload.java"
+    ],
+    "impacted_code": "contentDispositionRoot, file.getOriginalFilename(), () -> true, file, true, true"
+  },
+  {
+    "title": "Denial of Service - Uncontrolled Resource Consumption",
+    "description": "File upload without size restrictions allowing resource exhaustion through large file uploads.",
+    "severity": "MEDIUM",
+    "function": "getVulnerablePayloadLevel9",
+    "cwe": "CWE-400",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/fileupload/UnrestrictedFileUpload.java"
+    ],
+    "impacted_code": "Files.copy(file.getInputStream(), root.resolve(fileName), StandardCopyOption.REPLACE_EXISTING)"
+  },
+  {
+    "title": "Open Redirect - Direct URL Parameter",
+    "description": "URL parameter directly used in Location header without validation, allowing phishing through open redirects.",
+    "severity": "MEDIUM",
+    "function": "getVulnerablePayloadLevel1",
+    "cwe": "CWE-601",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/openRedirect/Http3xxStatusCodeBasedInjection.java"
+    ],
+    "impacted_code": "headerParam.get(LOCATION_HEADER_KEY).add(urlToRedirect)"
+  },
+  {
+    "title": "Open Redirect - Protocol Validation",
+    "description": "Open redirect with insufficient protocol validation - protocol-relative URLs and other bypasses remain exploitable.",
+    "severity": "MEDIUM",
+    "function": "getVulnerablePayloadLevel2",
+    "cwe": "CWE-601",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/openRedirect/Http3xxStatusCodeBasedInjection.java"
+    ],
+    "impacted_code": "!url.startsWith(HTTP) && !url.startsWith(HTTPS) && !url.startsWith(WWW)"
+  },
+  {
+    "title": "Open Redirect - Double Slash Check",
+    "description": "Open redirect checking for // but vulnerable to encoded bypasses and special characters.",
+    "severity": "MEDIUM",
+    "function": "getVulnerablePayloadLevel3",
+    "cwe": "CWE-601",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/openRedirect/Http3xxStatusCodeBasedInjection.java"
+    ],
+    "impacted_code": "!url.startsWith(\"//\") && !url.startsWith(WWW)"
+  },
+  {
+    "title": "Open Redirect - Null Byte Filter",
+    "description": "Open redirect with null byte filtering but still vulnerable to control character bypasses.",
+    "severity": "MEDIUM",
+    "function": "getVulnerablePayloadLevel4",
+    "cwe": "CWE-601",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/openRedirect/Http3xxStatusCodeBasedInjection.java"
+    ],
+    "impacted_code": "!url.startsWith(NULL_BYTE_CHARACTER)"
+  },
+  {
+    "title": "Open Redirect - Control Character Check",
+    "description": "Open redirect checking for control characters but bypassable through backslash and other techniques.",
+    "severity": "MEDIUM",
+    "function": "getVulnerablePayloadLevel5",
+    "cwe": "CWE-601",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/openRedirect/Http3xxStatusCodeBasedInjection.java"
+    ],
+    "impacted_code": "url.length() > 0 && url.charAt(0) > 20"
+  },
+  {
+    "title": "Open Redirect - Domain Prefix Bypass",
+    "description": "Open redirect attempting to prefix with trusted domain but vulnerable to @ symbol and parameter pollution.",
+    "severity": "MEDIUM",
+    "function": "getVulnerablePayloadLevel6",
+    "cwe": "CWE-601",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/openRedirect/Http3xxStatusCodeBasedInjection.java"
+    ],
+    "impacted_code": "requestUrl.getProtocol() + \"://\" + requestUrl.getAuthority() + urlToRedirect"
+  },
+  {
+    "title": "Open Redirect - Slash Stripping",
+    "description": "Open redirect attempting to normalize path by stripping leading slash but still vulnerable to double slash.",
+    "severity": "MEDIUM",
+    "function": "getVulnerablePayloadLevel7",
+    "cwe": "CWE-601",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/openRedirect/Http3xxStatusCodeBasedInjection.java"
+    ],
+    "impacted_code": "if (urlToRedirect.startsWith(\"/\")) { urlToRedirect = urlToRedirect.substring(1); }"
+  },
+  {
+    "title": "JWT - Client-Side Exposure in URL",
+    "description": "JWT token exposed in URL parameters, vulnerable to theft through browser history and referrer headers.",
+    "severity": "MEDIUM",
+    "function": "getVulnerablePayloadLevelUnsecure",
+    "cwe": "CWE-598",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/jwt/JWTVulnerability.java"
+    ],
+    "impacted_code": "String token = queryParams.get(JWT)"
+  },
+  {
+    "title": "JWT - Insecure Cookie Storage",
+    "description": "JWT stored in cookies without HttpOnly, Secure, or SameSite flags, vulnerable to XSS and CSRF attacks.",
+    "severity": "MEDIUM",
+    "function": "getVulnerablePayloadLevelUnsecure2CookieBased",
+    "cwe": "CWE-614",
+    "files": [
+      "src/main/java/org/sasanlabs/service/vulnerability/jwt/JWTVulnerability.java"
+    ],
+    "impacted_code": "List<String> tokens = requestEntity.getHeaders().get(\"cookie\")"
+  }
+]
